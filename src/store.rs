@@ -1,6 +1,12 @@
 use super::gen::GenData;
 
-// This could be implemented by Vec type object, or tree or hashmap
+/// EcsStore trait
+///
+/// # Examples
+///
+/// ```
+///
+/// ```
 ///
 pub trait EcsStore<T> {
 	fn add( &mut self, gen: GenData, t: T );
@@ -13,6 +19,13 @@ pub trait EcsStore<T> {
 	fn len( &self ) -> usize;
 }
 
+/// VecStore Struct
+///
+/// # Examples
+///
+/// ```
+///
+/// ```
 ///
 pub struct VecStore<T> {
 	items: Vec<Option<( u64, T )>>,
@@ -20,6 +33,13 @@ pub struct VecStore<T> {
 
 impl<T> VecStore<T> {
 	
+	/// Returns a new instance of a VecStore
+	///
+	/// # Examples
+	///
+	/// ```
+	///
+	/// ```
 	///
 	pub fn new( ) -> Self {
 		VecStore { items: Vec::new( ) }
@@ -28,6 +48,13 @@ impl<T> VecStore<T> {
 
 impl<T> EcsStore<T> for VecStore<T> {
 	
+	/// Adds a entity with ID gen to the VecStore
+	///
+	/// # Examples
+	///
+	/// ```
+	///
+	/// ```
 	///
 	fn add(&mut self, gen: GenData, t: T) {
 		while gen.pos >= self.items.len( ) {
@@ -36,6 +63,13 @@ impl<T> EcsStore<T> for VecStore<T> {
 		self.items[gen.pos] = Some( ( gen.gen, t ) );
 	}
 	
+	/// Returns a reference to data associated with entity ID gen
+	///
+	/// # Examples
+	///
+	/// ```
+	///
+	/// ```
 	///
 	fn get(&self, gen: GenData) -> Option<&T> {
 		if let Some( Some( ( in_gen, data ) ) ) = self.items.get( gen.pos ) {
@@ -46,6 +80,13 @@ impl<T> EcsStore<T> for VecStore<T> {
 		None
 	}
 	
+	/// Returns a mutable reference to data associated with entity ID gen
+	///
+	/// # Examples
+	///
+	/// ```
+	///
+	/// ```
 	///
 	fn get_mut(&mut self, gen: GenData) -> Option<&mut T> {
 		if let Some( Some( ( in_gen, data ) ) ) = self.items.get_mut( gen.pos ) {
@@ -56,6 +97,13 @@ impl<T> EcsStore<T> for VecStore<T> {
 		None
 	}
 	
+	/// Removes entity with ID gen from the VecStore
+	///
+	/// # Examples
+	///
+	/// ```
+	///
+	/// ```
 	///
 	fn drop(&mut self, gen: GenData) {
 		if let Some( Some( ( in_gen, _  ) ) ) = self.items.get( gen.pos ) {
@@ -65,6 +113,13 @@ impl<T> EcsStore<T> for VecStore<T> {
 		}
 	}
 	
+	/// Applies a mutable function to each entity in the VecStore but can not mutate the entities themselves
+	///
+	/// # Examples
+	///
+	/// ```
+	///
+	/// ```
 	///
 	fn for_each<F: FnMut(GenData, &T)>(&self, mut func: F) {
 		for ( n, x ) in self.items.iter( ).enumerate( ) {
@@ -74,6 +129,13 @@ impl<T> EcsStore<T> for VecStore<T> {
 		}
 	}
 	
+	/// Applies a mutable function to each entity in the VecStore and can mutate the entities themselves
+	///
+	/// # Examples
+	///
+	/// ```
+	///
+	/// ```
 	///
 	fn for_each_mut<F: FnMut(GenData, &mut T)>(&mut self, mut func: F) {
 		for ( n, x ) in self.items.iter_mut( ).enumerate( ) {
@@ -83,6 +145,13 @@ impl<T> EcsStore<T> for VecStore<T> {
 		}
 	}
 	
+	/// Returns the number of entities in the VecStore
+	///
+	/// # Examples
+	///
+	/// ```
+	///
+	/// ```
 	///
 	fn len( &self ) -> usize {
 		self.items.len()
@@ -92,7 +161,7 @@ impl<T> EcsStore<T> for VecStore<T> {
 #[cfg(test)]
 mod tests {
 	use super::*;
-	use crate::ecs::gen::{ GenManager };
+	use crate::gen::{ GenManager };
 	
 	#[test]
 	fn test_store_can_drop( ) {

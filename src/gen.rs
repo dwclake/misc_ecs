@@ -1,3 +1,10 @@
+/// Generation Data Struct
+///
+/// # Examples
+///
+/// ```
+///
+/// ```
 ///
 #[derive( Copy, Clone, Debug, PartialEq )]
 pub struct GenData {
@@ -5,12 +12,26 @@ pub struct GenData {
 	pub(crate) gen: u64,
 }
 
+/// Entity Active Struct
+///
+/// # Examples
+///
+/// ```
+///
+/// ```
 ///
 pub struct EntityActive {
 	active: bool,
 	gen: u64,
 }
 
+/// Generation Manager Struct
+///
+/// # Examples
+///
+/// ```
+///
+/// ```
 ///
 //Where we get a new GenerationIDs from
 pub struct GenManager {
@@ -20,6 +41,13 @@ pub struct GenManager {
 
 impl GenManager {
 	
+	/// Returns a new Generation Manager
+	///
+	/// # Examples
+	///
+	/// ```
+	///
+	/// ```
 	///
 	pub fn new( ) -> Self {
 		GenManager {
@@ -28,11 +56,25 @@ impl GenManager {
 		}
 	}
 	
+	/// Returns the length of the items vector, which is the number of active entities
+	///
+	/// # Examples
+	///
+	/// ```
+	///
+	/// ```
 	///
 	pub fn len( &self ) -> usize {
 		self.items.len()
 	}
 	
+	/// Returns a new or recently freed GenerationID
+	///
+	/// # Examples
+	///
+	/// ```
+	///
+	/// ```
 	///
 	pub fn next( &mut self ) -> GenData {
 		if let Some( loc ) = self.drops.pop( ) {
@@ -54,13 +96,20 @@ impl GenManager {
 		}
 	}
 	
+	/// Adds entity to the drop list, as long as there is not a newer entity with that ID
 	///
-	pub fn drop( &mut self, g: GenData ) {
-		if let Some( entity_active ) = self.items.get_mut( g.pos ) {
-			if entity_active.active && entity_active.gen == g.gen {
+	/// # Examples
+	///
+	/// ```
+	///
+	/// ```
+	///
+	pub fn drop( &mut self, gen: GenData ) {
+		if let Some( entity_active ) = self.items.get_mut( gen.pos ) {
+			if entity_active.active && entity_active.gen == gen.gen {
 				// Don't drop newer items than given
 				entity_active.active = false;
-				self.drops.push( g.pos );
+				self.drops.push( gen.pos );
 			}
 		}
 	}
