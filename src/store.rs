@@ -13,7 +13,6 @@ pub trait EcsStore<T> {
 	fn get( &self, gen: GenData ) -> Option<&T>;
 	fn get_mut( &mut self, gen: GenData ) -> Option<&mut T>;
 	fn drop( &mut self, gen: GenData );
-	// Optional but helpful could be another trait even
 	fn for_each<F: FnMut( GenData, &T )>( &self, func: F );
 	fn for_each_mut<F: FnMut( GenData, &mut T )>( &mut self, func: F );
 	fn len( &self ) -> usize;

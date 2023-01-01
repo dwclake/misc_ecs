@@ -20,6 +20,7 @@ pub struct GenData {
 ///
 /// ```
 ///
+#[derive(Debug)]
 pub struct EntityActive {
 	active: bool,
 	gen: u64,
@@ -34,6 +35,7 @@ pub struct EntityActive {
 /// ```
 ///
 //Where we get a new GenerationIDs from
+#[derive(Debug)]
 pub struct GenManager {
 	items: Vec<EntityActive>,
 	drops: Vec<usize>, // List of all dropped entities

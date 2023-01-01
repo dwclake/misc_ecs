@@ -1,6 +1,4 @@
 use misc_ecs::{ gen::*, store::* };
-use std::ops::Range;
-use rand::random;
 
 pub struct Attributes {
 	pub mass: f64,
@@ -22,15 +20,13 @@ fn main() {
 			pos.add(entity, 5 );
 			vel.add(entity, 5 );
 			acc.add(entity, 5 );
-		}
-		
-		acc.for_each_mut(|_gen, ac| {
-			*ac += random::<i32>();
-		});
+		} else { break }
 		
 		let _x = format!("Pass = {}", pass);
 		pass += 1;
 		
-		std::thread::sleep(std::time::Duration::from_millis(3000));
+		std::thread::sleep(std::time::Duration::from_millis(30));
 	}
+	
+	dbg!( gen_manager );
 }
