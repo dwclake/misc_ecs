@@ -79,7 +79,7 @@ impl GenManager {
 	///
 	/// ```
 	///
-	pub fn next( &mut self ) -> EntityID {
+	pub fn next( &mut self ) -> EntityActive {
 		if let Some( loc ) = self.drops.pop( ) {
 			// Most recent drop
 			let entity_active = EntityActive {
@@ -87,12 +87,12 @@ impl GenManager {
 				id: loc,
 			};
 			self.items.push( entity_active.clone() );
-			return entity_active.id;
+			return entity_active;
 		}
 		// If nothing left in drops, add on the end
 		let entity_active = EntityActive {active: true, id: EntityID{ id: thread_rng().next_u64() }};
 		self.items.push( entity_active.clone() );
-		return entity_active.id;
+		return entity_active;
 		
 	}
 	
