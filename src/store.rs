@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use crate::gen::EntityActive;
 use super::gen::EntityID;
 
 /// EcsStore trait
@@ -10,12 +11,12 @@ use super::gen::EntityID;
 /// ```
 ///
 pub trait EcsStore<T> {
-	fn add( &mut self, gen: EntityID, t: T );
-	fn get( &self, gen: EntityID ) -> Option<&T>;
-	fn get_mut( &mut self, gen: EntityID ) -> Option<&mut T>;
-	fn drop( &mut self, gen: EntityID );
-	fn for_each<F: FnMut( EntityID, &T )>( &self, func: F );
-	fn for_each_mut<F: FnMut( EntityID, &mut T )>( &mut self, func: F );
+	fn add( &mut self, gen: EntityActive, t: T );
+	fn get( &self, gen: EntityActive ) -> Option<&T>;
+	fn get_mut( &mut self, gen: EntityActive ) -> Option<&mut T>;
+	fn drop( &mut self, gen: EntityActive );
+	fn for_each<F: FnMut( EntityActive, &T )>( &self, func: F );
+	fn for_each_mut<F: FnMut( EntityActive, &mut T )>( &mut self, func: F );
 	fn len( &self ) -> usize;
 }
 
@@ -28,7 +29,7 @@ pub trait EcsStore<T> {
 /// ```
 ///
 pub struct HashStore<T> {
-	items: HashMap<EntityID, T>,
+	items: HashMap<EntityActive, T>,
 }
 
 impl<T> HashStore<T> {
@@ -56,7 +57,7 @@ impl<T> EcsStore<T> for HashStore<T> {
 	///
 	/// ```
 	///
-	fn add(&mut self, id: EntityID, t: T) {
+	fn add(&mut self, id: EntityActive, t: T) {
 		self.items.insert( id, t );
 	}
 	
@@ -68,7 +69,7 @@ impl<T> EcsStore<T> for HashStore<T> {
 	///
 	/// ```
 	///
-	fn get(&self, id: EntityID) -> Option<&T> {
+	fn get(&self, id: EntityActive ) -> Option<&T> {
 		self.items.get( &id )
 	}
 	
@@ -80,7 +81,7 @@ impl<T> EcsStore<T> for HashStore<T> {
 	///
 	/// ```
 	///
-	fn get_mut(&mut self, id: EntityID) -> Option<&mut T> {
+	fn get_mut(&mut self, id: EntityActive) -> Option<&mut T> {
 		self.items.get_mut( &id )
 	}
 	
@@ -92,7 +93,7 @@ impl<T> EcsStore<T> for HashStore<T> {
 	///
 	/// ```
 	///
-	fn drop(&mut self, id: EntityID) {
+	fn drop(&mut self, id: EntityActive) {
 		self.items.remove( &id );
 	}
 	
@@ -104,10 +105,10 @@ impl<T> EcsStore<T> for HashStore<T> {
 	///
 	/// ```
 	///
-	fn for_each<F: FnMut(EntityID, &T)>(&self, mut func: F) {
+	fn for_each<F: FnMut(EntityActive, &T)>(&self, mut func: F) {
 		for ( _n, x ) in self.items.iter( ).enumerate( ) {
 			if let Some( (id, data) ) = Some( (x.0, x.1) ) {
-				func( EntityID { id: id.id }, data );
+				func( EntityActive { id: id.id, active: id.active }, data );
 			}
 		}
 	}
@@ -120,10 +121,10 @@ impl<T> EcsStore<T> for HashStore<T> {
 	///
 	/// ```
 	///
-	fn for_each_mut<F: FnMut(EntityID, &mut T)>(&mut self, mut func: F) {
+	fn for_each_mut<F: FnMut(EntityActive, &mut T)>(&mut self, mut func: F) {
 		for ( _n, x ) in self.items.iter_mut( ).enumerate( ) {
 			if let Some( (id, data) ) = Some( (x.0, x.1) ) {
-				func( EntityID { id: id.id }, data );
+				func( EntityActive { id: id.id, active: id.active }, data );
 			}
 		}
 	}

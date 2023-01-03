@@ -21,10 +21,10 @@ pub struct EntityID {
 ///
 /// ```
 ///
-#[derive( Copy, Clone, Debug)]
+#[derive( Eq, Hash, PartialEq, Copy, Clone, Debug)]
 pub struct EntityActive {
-	active: bool,
-	id: EntityID,
+	pub(crate) active: bool,
+	pub(crate) id: EntityID,
 }
 
 /// Generation Manager Struct
