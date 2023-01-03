@@ -1,6 +1,5 @@
 use std::collections::HashMap;
 use crate::gen::EntityActive;
-use super::gen::EntityID;
 
 /// EcsStore trait
 ///
@@ -107,8 +106,8 @@ impl<T> EcsStore<T> for HashStore<T> {
 	///
 	fn for_each<F: FnMut(EntityActive, &T)>(&self, mut func: F) {
 		for ( _n, x ) in self.items.iter( ).enumerate( ) {
-			if let Some( (id, data) ) = Some( (x.0, x.1) ) {
-				func( EntityActive { id: id.id, active: id.active }, data );
+			if let Some( ( entity, data) ) = Some( (x.0, x.1) ) {
+				func( EntityActive { id: entity.id, active: entity.active }, data );
 			}
 		}
 	}
@@ -123,8 +122,8 @@ impl<T> EcsStore<T> for HashStore<T> {
 	///
 	fn for_each_mut<F: FnMut(EntityActive, &mut T)>(&mut self, mut func: F) {
 		for ( _n, x ) in self.items.iter_mut( ).enumerate( ) {
-			if let Some( (id, data) ) = Some( (x.0, x.1) ) {
-				func( EntityActive { id: id.id, active: id.active }, data );
+			if let Some( ( entity, data) ) = Some( (x.0, x.1) ) {
+				func( EntityActive { id: entity.id, active: entity.active }, data );
 			}
 		}
 	}
@@ -144,8 +143,8 @@ impl<T> EcsStore<T> for HashStore<T> {
 
 #[cfg(test)]
 mod tests {
-	use super::*;
-	use crate::gen::{ GenManager };
+	//use super::*;
+	//use crate::gen::{ GenManager };
 	
 	#[test]
 	fn test_store_can_drop( ) {

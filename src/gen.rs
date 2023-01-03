@@ -80,11 +80,11 @@ impl GenManager {
 	/// ```
 	///
 	pub fn next( &mut self ) -> EntityActive {
-		if let Some( loc ) = self.drops.pop( ) {
+		if let Some( id ) = self.drops.pop( ) {
 			// Most recent drop
 			let entity_active = EntityActive {
 				active: true,
-				id: loc,
+				id,
 			};
 			self.items.push( entity_active.clone() );
 			return entity_active;
@@ -105,9 +105,7 @@ impl GenManager {
 	/// ```
 	///
 	pub fn drop( &mut self, entity_active: &mut EntityActive ) {
-		//if let Some( entity_active ) = self.items.get_mut(  ) {
 		if entity_active.active {
-			// Don't drop newer items than given
 			entity_active.active = false;
 			self.drops.push( entity_active.id.clone() );
 		}
@@ -116,7 +114,7 @@ impl GenManager {
 
 #[cfg(test)]
 mod tests {
-	use super::*;
+	//use super::*;
 	
 	#[test]
 	fn test_items_drop( ) {
