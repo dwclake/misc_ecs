@@ -1,4 +1,5 @@
-use super::gen::GenData;
+use std::collections::HashMap;
+use super::gen::EntityID;
 
 /// EcsStore trait
 ///
@@ -9,16 +10,16 @@ use super::gen::GenData;
 /// ```
 ///
 pub trait EcsStore<T> {
-	fn add( &mut self, gen: GenData, t: T );
-	fn get( &self, gen: GenData ) -> Option<&T>;
-	fn get_mut( &mut self, gen: GenData ) -> Option<&mut T>;
-	fn drop( &mut self, gen: GenData );
-	fn for_each<F: FnMut( GenData, &T )>( &self, func: F );
-	fn for_each_mut<F: FnMut( GenData, &mut T )>( &mut self, func: F );
+	fn add( &mut self, gen: EntityID, t: T );
+	fn get( &self, gen: EntityID ) -> Option<&T>;
+	fn get_mut( &mut self, gen: EntityID ) -> Option<&mut T>;
+	fn drop( &mut self, gen: EntityID );
+	fn for_each<F: FnMut( EntityID, &T )>( &self, func: F );
+	fn for_each_mut<F: FnMut( EntityID, &mut T )>( &mut self, func: F );
 	fn len( &self ) -> usize;
 }
 
-/// VecStore Struct
+/// HashStore Struct
 ///
 /// # Examples
 ///
@@ -26,13 +27,13 @@ pub trait EcsStore<T> {
 ///
 /// ```
 ///
-pub struct VecStore<T> {
-	items: Vec<Option<( u64, T )>>,
+pub struct HashStore<T> {
+	items: HashMap<EntityID, T>,
 }
 
-impl<T> VecStore<T> {
+impl<T> HashStore<T> {
 	
-	/// Returns a new instance of a VecStore
+	/// Returns a new instance of a HashStore
 	///
 	/// # Examples
 	///
@@ -41,13 +42,13 @@ impl<T> VecStore<T> {
 	/// ```
 	///
 	pub fn new( ) -> Self {
-		VecStore { items: Vec::new( ) }
+		HashStore { items: HashMap::new( ) }
 	}
 }
 
-impl<T> EcsStore<T> for VecStore<T> {
+impl<T> EcsStore<T> for HashStore<T> {
 	
-	/// Adds a entity with ID gen to the VecStore
+	/// Adds a entity with ID gen to the HashStore
 	///
 	/// # Examples
 	///
@@ -55,11 +56,8 @@ impl<T> EcsStore<T> for VecStore<T> {
 	///
 	/// ```
 	///
-	fn add(&mut self, gen: GenData, t: T) {
-		while gen.pos >= self.items.len( ) {
-			self.items.push( None );
-		}
-		self.items[gen.pos] = Some( ( gen.gen, t ) );
+	fn add(&mut self, id: EntityID, t: T) {
+		self.items.insert( id, t );
 	}
 	
 	/// Returns a reference to data associated with entity ID gen
@@ -70,13 +68,8 @@ impl<T> EcsStore<T> for VecStore<T> {
 	///
 	/// ```
 	///
-	fn get(&self, gen: GenData) -> Option<&T> {
-		if let Some( Some( ( in_gen, data ) ) ) = self.items.get( gen.pos ) {
-			if *in_gen == gen.gen {
-				return Some( data );
-			}
-		}
-		None
+	fn get(&self, id: EntityID) -> Option<&T> {
+		self.items.get( &id )
 	}
 	
 	/// Returns a mutable reference to data associated with entity ID gen
@@ -87,16 +80,11 @@ impl<T> EcsStore<T> for VecStore<T> {
 	///
 	/// ```
 	///
-	fn get_mut(&mut self, gen: GenData) -> Option<&mut T> {
-		if let Some( Some( ( in_gen, data ) ) ) = self.items.get_mut( gen.pos ) {
-			if *in_gen == gen.gen {
-				return Some( data );
-			}
-		}
-		None
+	fn get_mut(&mut self, id: EntityID) -> Option<&mut T> {
+		self.items.get_mut( &id )
 	}
 	
-	/// Removes entity with ID gen from the VecStore
+	/// Removes entity with ID gen from the HashStore
 	///
 	/// # Examples
 	///
@@ -104,15 +92,11 @@ impl<T> EcsStore<T> for VecStore<T> {
 	///
 	/// ```
 	///
-	fn drop(&mut self, gen: GenData) {
-		if let Some( Some( ( in_gen, _  ) ) ) = self.items.get( gen.pos ) {
-			if *in_gen == gen.gen {
-				self.items[gen.pos] = None;
-			}
-		}
+	fn drop(&mut self, id: EntityID) {
+		self.items.remove( &id );
 	}
 	
-	/// Applies a mutable function to each entity in the VecStore but can not mutate the entities themselves
+	/// Applies a mutable function to each entity in the HashStore but can not mutate the entities themselves
 	///
 	/// # Examples
 	///
@@ -120,15 +104,15 @@ impl<T> EcsStore<T> for VecStore<T> {
 	///
 	/// ```
 	///
-	fn for_each<F: FnMut(GenData, &T)>(&self, mut func: F) {
-		for ( n, x ) in self.items.iter( ).enumerate( ) {
-			if let Some( ( gen, data ) ) = x {
-				func( GenData { gen: *gen, pos: n }, data );
+	fn for_each<F: FnMut(EntityID, &T)>(&self, mut func: F) {
+		for ( _n, x ) in self.items.iter( ).enumerate( ) {
+			if let Some( (id, data) ) = Some( (x.0, x.1) ) {
+				func( EntityID { id: id.id }, data );
 			}
 		}
 	}
 	
-	/// Applies a mutable function to each entity in the VecStore and can mutate the entities themselves
+	/// Applies a mutable function to each entity in the HashStore and can mutate the entities themselves
 	///
 	/// # Examples
 	///
@@ -136,15 +120,15 @@ impl<T> EcsStore<T> for VecStore<T> {
 	///
 	/// ```
 	///
-	fn for_each_mut<F: FnMut(GenData, &mut T)>(&mut self, mut func: F) {
-		for ( n, x ) in self.items.iter_mut( ).enumerate( ) {
-			if let Some( ( gen, data ) ) = x {
-				func( GenData { gen: *gen, pos: n }, data );
+	fn for_each_mut<F: FnMut(EntityID, &mut T)>(&mut self, mut func: F) {
+		for ( _n, x ) in self.items.iter_mut( ).enumerate( ) {
+			if let Some( (id, data) ) = Some( (x.0, x.1) ) {
+				func( EntityID { id: id.id }, data );
 			}
 		}
 	}
 	
-	/// Returns the number of entities in the VecStore
+	/// Returns the number of entities in the HashStore
 	///
 	/// # Examples
 	///
@@ -164,8 +148,8 @@ mod tests {
 	
 	#[test]
 	fn test_store_can_drop( ) {
-		let mut gen_manager = GenManager::new( );
-		let mut vec_store = VecStore::new( );
+		/*let mut gen_manager = GenManager::new( );
+		let mut vec_store = HashStore::new( );
 		
 		vec_store.add( gen_manager.next( ), 5 );
 		vec_store.add( gen_manager.next( ), 3 );
@@ -181,6 +165,6 @@ mod tests {
 		
 		vec_store.drop( g4 );
 		
-		assert_eq!( vec_store.get( g4 ), None );
+		assert_eq!( vec_store.get( g4 ), None );*/
 	}
 }

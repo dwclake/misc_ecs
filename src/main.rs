@@ -8,9 +8,9 @@ pub struct Attributes {
 fn main() {
 	
 	let mut gen_manager = GenManager::new();
-	let mut pos = VecStore::new();
-	let mut vel = VecStore::new();
-	let mut acc = VecStore::new();
+	let mut pos = HashStore::new();
+	let mut vel = HashStore::new();
+	let mut acc = HashStore::new();
 	let mut pass = 0;
 	
 	loop {
