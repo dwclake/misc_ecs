@@ -26,7 +26,7 @@ pub struct Entity {
 #[derive(Debug)]
 pub struct EntityManager {
 	items: Vec<Entity>,
-	drops: Vec<u64>, // List of all dropped entities
+	drops: Vec<Entity>, // List of all dropped entities
 }
 
 impl EntityManager {
@@ -67,19 +67,19 @@ impl EntityManager {
 	/// ```
 	///
 	pub fn next( &mut self ) -> Entity {
-		if let Some( id ) = self.drops.pop( ) {
+		if let Some( entity ) = self.drops.pop( ) {
 			// Most recent drop
-			let entity_active = Entity {
+			let entity = Entity {
 				active: true,
-				id,
+				id: entity.id,
 			};
-			self.items.push( entity_active.clone() );
-			return entity_active;
+			self.items.push( entity.clone() );
+			return entity;
 		}
 		// If nothing left in drops, add on the end
-		let entity_active = Entity { active: true, id: thread_rng().next_u64() };
-		self.items.push( entity_active.clone() );
-		return entity_active;
+		let entity = Entity { active: true, id: thread_rng().next_u64() };
+		self.items.push( entity.clone() );
+		return entity;
 		
 	}
 	
@@ -91,10 +91,10 @@ impl EntityManager {
 	///
 	/// ```
 	///
-	pub fn drop( &mut self, entity_active: &mut Entity ) {
-		if entity_active.active {
-			entity_active.active = false;
-			self.drops.push( entity_active.id.clone() );
+	pub fn drop( &mut self, entity: &mut Entity ) {
+		if entity.active {
+			entity.active = false;
+			self.drops.push( *entity );
 		}
 	}
 }
