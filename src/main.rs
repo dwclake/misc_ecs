@@ -7,7 +7,7 @@ pub struct Attributes {
 
 fn main() {
 	
-	let mut gen_manager = GenManager::new();
+	let mut gen_manager = EntityManager::new();
 	let mut pos = HashStore::new();
 	let mut vel = HashStore::new();
 	let mut acc = HashStore::new();

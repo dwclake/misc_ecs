@@ -1,18 +1,5 @@
 use rand::{RngCore, thread_rng};
 
-/// Generation Data Struct
-///
-/// # Examples
-///
-/// ```
-///
-/// ```
-///
-#[derive( Eq, Hash, Copy, Clone, Debug, PartialEq )]
-pub struct EntityID {
-	pub(crate) id: u64,
-}
-
 /// Entity Active Struct
 ///
 /// # Examples
@@ -22,9 +9,9 @@ pub struct EntityID {
 /// ```
 ///
 #[derive( Eq, Hash, PartialEq, Copy, Clone, Debug)]
-pub struct EntityActive {
+pub struct Entity {
 	pub(crate) active: bool,
-	pub(crate) id: EntityID,
+	pub(crate) id: u64,
 }
 
 /// Generation Manager Struct
@@ -37,12 +24,12 @@ pub struct EntityActive {
 ///
 //Where we get a new GenerationIDs from
 #[derive(Debug)]
-pub struct GenManager {
-	items: Vec<EntityActive>,
-	drops: Vec<EntityID>, // List of all dropped entities
+pub struct EntityManager {
+	items: Vec<Entity>,
+	drops: Vec<u64>, // List of all dropped entities
 }
 
-impl GenManager {
+impl EntityManager {
 	
 	/// Returns a new Generation Manager
 	///
@@ -53,7 +40,7 @@ impl GenManager {
 	/// ```
 	///
 	pub fn new( ) -> Self {
-		GenManager {
+		EntityManager {
 			items: Vec::new( ),
 			drops: Vec::new( ),
 		}
@@ -79,10 +66,10 @@ impl GenManager {
 	///
 	/// ```
 	///
-	pub fn next( &mut self ) -> EntityActive {
+	pub fn next( &mut self ) -> Entity {
 		if let Some( id ) = self.drops.pop( ) {
 			// Most recent drop
-			let entity_active = EntityActive {
+			let entity_active = Entity {
 				active: true,
 				id,
 			};
@@ -90,7 +77,7 @@ impl GenManager {
 			return entity_active;
 		}
 		// If nothing left in drops, add on the end
-		let entity_active = EntityActive {active: true, id: EntityID{ id: thread_rng().next_u64() }};
+		let entity_active = Entity { active: true, id: thread_rng().next_u64() };
 		self.items.push( entity_active.clone() );
 		return entity_active;
 		
@@ -104,7 +91,7 @@ impl GenManager {
 	///
 	/// ```
 	///
-	pub fn drop( &mut self, entity_active: &mut EntityActive ) {
+	pub fn drop( &mut self, entity_active: &mut Entity ) {
 		if entity_active.active {
 			entity_active.active = false;
 			self.drops.push( entity_active.id.clone() );
@@ -118,7 +105,7 @@ mod tests {
 	
 	#[test]
 	fn test_items_drop( ) {
-		/*let mut gen_manager = GenManager::new( );
+		/*let mut gen_manager = EntityManager::new( );
 		
 		let g = gen_manager.next( );
 		//assert_eq!( g, EntityID { gen: 0, pos: 0 } );
