@@ -10,10 +10,10 @@ use crate::gen::Entity;
 /// ```
 ///
 pub trait EcsStore<T> {
-	fn add( &mut self, gen: Entity, t: T );
-	fn get( &self, gen: Entity ) -> Option<&T>;
-	fn get_mut( &mut self, gen: Entity ) -> Option<&mut T>;
-	fn drop( &mut self, gen: Entity );
+	fn add( &mut self, entity: Entity, t: T );
+	fn get( &self, entity: Entity ) -> Option<&T>;
+	fn get_mut( &mut self, entity: Entity ) -> Option<&mut T>;
+	fn drop( &mut self, entity: Entity );
 	fn for_each<F: FnMut( Entity, &T )>( &self, func: F );
 	fn for_each_mut<F: FnMut( Entity, &mut T )>( &mut self, func: F );
 	fn len( &self ) -> usize;

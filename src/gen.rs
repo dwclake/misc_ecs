@@ -91,7 +91,7 @@ impl EntityManager {
 	///
 	/// ```
 	///
-	pub fn drop( &mut self, entity: &mut Entity ) {
+	pub fn drop( &mut self, entity: &Entity ) {
 		//if entity.active {
 		//	entity.active = false;
 			self.drops.push( *entity );
