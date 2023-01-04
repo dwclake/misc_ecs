@@ -10,7 +10,7 @@ use rand::{RngCore, thread_rng};
 ///
 #[derive( Eq, Hash, PartialEq, Copy, Clone, Debug)]
 pub struct Entity {
-	pub(crate) active: bool,
+	//pub(crate) active: bool,
 	pub(crate) id: u64,
 }
 
@@ -70,14 +70,14 @@ impl EntityManager {
 		if let Some( entity ) = self.drops.pop( ) {
 			// Most recent drop
 			let entity = Entity {
-				active: true,
+				//active: true,
 				id: entity.id,
 			};
 			self.items.push( entity.clone() );
 			return entity;
 		}
 		// If nothing left in drops, add on the end
-		let entity = Entity { active: true, id: thread_rng().next_u64() };
+		let entity = Entity { /*active: true,*/ id: thread_rng().next_u64() };
 		self.items.push( entity.clone() );
 		return entity;
 		
@@ -92,10 +92,10 @@ impl EntityManager {
 	/// ```
 	///
 	pub fn drop( &mut self, entity: &mut Entity ) {
-		if entity.active {
-			entity.active = false;
+		//if entity.active {
+		//	entity.active = false;
 			self.drops.push( *entity );
-		}
+		//}
 	}
 }
 
