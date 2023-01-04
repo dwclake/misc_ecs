@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use rand::{RngCore, thread_rng};
 
 /// Entity Active Struct
@@ -25,7 +26,7 @@ pub struct Entity {
 //Where we get a new GenerationIDs from
 #[derive(Debug)]
 pub struct EntityManager {
-	items: Vec<Entity>,
+	items: HashMap<u64, Entity>,
 	drops: Vec<Entity>, // List of all dropped entities
 }
 
@@ -41,7 +42,7 @@ impl EntityManager {
 	///
 	pub fn new( ) -> Self {
 		EntityManager {
-			items: Vec::new( ),
+			items: HashMap::new( ),
 			drops: Vec::new( ),
 		}
 	}
@@ -73,12 +74,12 @@ impl EntityManager {
 				//active: true,
 				id: entity.id,
 			};
-			self.items.push( entity.clone() );
+			self.items.insert( entity.id, entity.clone() );
 			return entity;
 		}
 		// If nothing left in drops, add on the end
 		let entity = Entity { /*active: true,*/ id: thread_rng().next_u64() };
-		self.items.push( entity.clone() );
+		self.items.insert( entity.id, entity.clone() );
 		return entity;
 		
 	}
@@ -95,6 +96,7 @@ impl EntityManager {
 		//if entity.active {
 		//	entity.active = false;
 			self.drops.push( *entity );
+			self.items.remove( &entity.id );
 		//}
 	}
 }
