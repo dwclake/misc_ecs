@@ -1,3 +1,4 @@
+use std::collections::hash_map::{Iter, IterMut};
 use std::collections::HashMap;
 use crate::gen::Entity;
 
@@ -16,6 +17,8 @@ pub trait EcsStore<T> {
 	fn drop( &mut self, entity: Entity );
 	fn for_each<F: FnMut( Entity, &T )>( &self, func: F );
 	fn for_each_mut<F: FnMut( Entity, &mut T )>( &mut self, func: F );
+	fn iter( &self ) -> Iter< '_, Entity, T >;
+	fn iter_mut( &mut self ) -> IterMut< '_, Entity, T >;
 	fn len( &self ) -> usize;
 }
 
@@ -126,6 +129,30 @@ impl<T> EcsStore<T> for HashStore<T> {
 				func( Entity { id: entity.id, active: entity.active }, data );
 			}
 		}
+	}
+	
+	///
+	///
+	/// # Examples
+	///
+	/// ```
+	///
+	/// ```
+	///
+	fn iter( &self ) -> Iter< '_, Entity, T > {
+		self.items.iter()
+	}
+	
+	///
+	///
+	/// # Examples
+	///
+	/// ```
+	///
+	/// ```
+	///
+	fn iter_mut( &mut self ) -> IterMut< '_, Entity, T > {
+		self.items.iter_mut()
 	}
 	
 	/// Returns the number of entities in the HashStore
