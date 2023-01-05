@@ -30,6 +30,7 @@ pub trait EcsStore<T> {
 ///
 /// ```
 ///
+#[derive(Debug)]
 pub struct HashStore<T> {
 	items: HashMap<Entity, T>,
 }
