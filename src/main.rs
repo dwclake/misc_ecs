@@ -1,4 +1,4 @@
-use misc_ecs::{ gen::*, store::* };
+use misc_ecs::prelude::*;
 
 pub struct Attributes {
 	pub mass: f64,

@@ -1,8 +1,8 @@
 use std::collections::hash_map::{Iter, IterMut};
 use std::collections::HashMap;
-use crate::ecs::gen::Entity;
+use crate::prelude::*;
 
-/// EcsStore trait
+/// Store trait
 ///
 /// # Examples
 ///
@@ -10,16 +10,29 @@ use crate::ecs::gen::Entity;
 ///
 /// ```
 ///
-pub trait EcsStore<T> {
-	fn add( &mut self, entity: Entity, t: T );
-	fn get( &self, entity: Entity ) -> Option<&T>;
-	fn get_mut( &mut self, entity: Entity ) -> Option<&mut T>;
-	fn drop( &mut self, entity: Entity );
-	fn for_each<F: FnMut( Entity, &T )>( &self, func: F );
-	fn for_each_mut<F: FnMut( Entity, &mut T )>( &mut self, func: F );
-	fn iter( &self ) -> Iter< '_, Entity, T >;
-	fn iter_mut( &mut self ) -> IterMut< '_, Entity, T >;
+pub trait Store<T> {
+	fn new( ) -> Self;
+	fn add( &mut self, entity: EntityID, t: T );
+	fn get( &self, entity: EntityID ) -> Option<&T>;
+	fn get_mut( &mut self, entity: EntityID ) -> Option<&mut T>;
+	fn drop( &mut self, entity: EntityID );
+	fn for_each<F: FnMut( EntityID, &T )>( &self, func: F );
+	fn for_each_mut<F: FnMut( EntityID, &mut T )>( &mut self, func: F );
+	fn iter( &self ) -> Iter< '_, EntityID, T >;
+	fn iter_mut( &mut self ) -> IterMut< '_, EntityID, T >;
 	fn len( &self ) -> usize;
+}
+
+/// Store trait
+///
+/// # Examples
+///
+/// ```
+///
+/// ```
+///
+pub trait Storage {
+	type Type;
 }
 
 /// HashStore Struct
@@ -32,25 +45,14 @@ pub trait EcsStore<T> {
 ///
 #[derive(Debug)]
 pub struct HashStore<T> {
-	items: HashMap<Entity, T>,
+	items: HashMap<EntityID, T>,
 }
 
-impl<T> HashStore<T> {
+impl<T> Store<T> for HashStore<T> {
 	
-	/// Returns a new instance of a HashStore
-	///
-	/// # Examples
-	///
-	/// ```
-	///
-	/// ```
-	///
-	pub fn new( ) -> Self {
+	fn new( ) -> Self {
 		HashStore { items: HashMap::new( ) }
 	}
-}
-
-impl<T> EcsStore<T> for HashStore<T> {
 	
 	/// Adds a entity with ID gen to the HashStore
 	///
@@ -60,7 +62,7 @@ impl<T> EcsStore<T> for HashStore<T> {
 	///
 	/// ```
 	///
-	fn add(&mut self, id: Entity, t: T) {
+	fn add(&mut self, id: EntityID, t: T) {
 		self.items.insert( id, t );
 	}
 	
@@ -72,7 +74,7 @@ impl<T> EcsStore<T> for HashStore<T> {
 	///
 	/// ```
 	///
-	fn get(&self, id: Entity ) -> Option<&T> {
+	fn get(&self, id: EntityID ) -> Option<&T> {
 		self.items.get( &id )
 	}
 	
@@ -84,7 +86,7 @@ impl<T> EcsStore<T> for HashStore<T> {
 	///
 	/// ```
 	///
-	fn get_mut(&mut self, id: Entity) -> Option<&mut T> {
+	fn get_mut(&mut self, id: EntityID) -> Option<&mut T> {
 		self.items.get_mut( &id )
 	}
 	
@@ -96,7 +98,7 @@ impl<T> EcsStore<T> for HashStore<T> {
 	///
 	/// ```
 	///
-	fn drop(&mut self, id: Entity) {
+	fn drop(&mut self, id: EntityID) {
 		self.items.remove( &id );
 	}
 	
@@ -108,10 +110,10 @@ impl<T> EcsStore<T> for HashStore<T> {
 	///
 	/// ```
 	///
-	fn for_each<F: FnMut(Entity, &T)>(&self, mut func: F) {
+	fn for_each<F: FnMut(EntityID, &T)>(&self, mut func: F) {
 		for ( _n, x ) in self.items.iter( ).enumerate( ) {
 			if let Some( ( entity, data) ) = Some( (x.0, x.1) ) {
-				func( Entity { id: entity.id, active: entity.active }, data );
+				func( EntityID { id: entity.id, active: entity.active }, data );
 			}
 		}
 	}
@@ -124,10 +126,10 @@ impl<T> EcsStore<T> for HashStore<T> {
 	///
 	/// ```
 	///
-	fn for_each_mut<F: FnMut(Entity, &mut T)>(&mut self, mut func: F) {
+	fn for_each_mut<F: FnMut(EntityID, &mut T)>(&mut self, mut func: F) {
 		for ( _n, x ) in self.items.iter_mut( ).enumerate( ) {
 			if let Some( ( entity, data) ) = Some( (x.0, x.1) ) {
-				func( Entity { id: entity.id, active: entity.active }, data );
+				func( EntityID { id: entity.id, active: entity.active }, data );
 			}
 		}
 	}
@@ -140,7 +142,7 @@ impl<T> EcsStore<T> for HashStore<T> {
 	///
 	/// ```
 	///
-	fn iter( &self ) -> Iter< '_, Entity, T > {
+	fn iter( &self ) -> Iter< '_, EntityID, T > {
 		self.items.iter()
 	}
 	
@@ -152,7 +154,7 @@ impl<T> EcsStore<T> for HashStore<T> {
 	///
 	/// ```
 	///
-	fn iter_mut( &mut self ) -> IterMut< '_, Entity, T > {
+	fn iter_mut( &mut self ) -> IterMut< '_, EntityID, T > {
 		self.items.iter_mut()
 	}
 	
@@ -169,14 +171,14 @@ impl<T> EcsStore<T> for HashStore<T> {
 	}
 }
 
-#[cfg(test)]
+/*#[cfg(test)]
 mod tests {
 	//use super::*;
-	//use crate::gen::{ EntityManager };
+	//use crate::gen::{ EntityIDManager };
 	
 	#[test]
 	fn test_store_can_drop( ) {
-		/*let mut gen_manager = EntityManager::new( );
+		/*let mut gen_manager = EntityIDManager::new( );
 		let mut vec_store = HashStore::new( );
 		
 		vec_store.add( gen_manager.next( ), 5 );
@@ -195,4 +197,4 @@ mod tests {
 		
 		assert_eq!( vec_store.get( g4 ), None );*/
 	}
-}
+}*/
