@@ -14,7 +14,7 @@ use crate::prelude::*;
 ///
 pub struct World {
 	pub entity_manager: EntityManager,
-	pub components: HashMap< ComponentID, HashStore<Box<dyn Component<Type = f32>>>>,
+	pub components: HashMap< ComponentID, HashStore<Box<dyn Component<Storage = ()>>>>,
 	pub systems: HashMap< SystemID, Box<dyn System<SystemData = ()>>>,
 }
 
@@ -62,10 +62,10 @@ impl World {
 	/// use misc_ecs::ecs::store::Storage;
 	/// use misc_ecs::prelude::*;
 	///
-	/// struct Pos<T>(T);
+	/// struct Pos(f32);
 	///
-	/// impl<T: Add> Component for Pos<T> {
-	/// 	type Type = T;
+	/// impl Component for Pos {
+	/// 	type Storage = HashStore<Self>;
 	/// }
 	/// let mut world = World::new();
 	///
@@ -75,7 +75,7 @@ impl World {
 	///
 	///
 	/// let acc = ComponentID::new();
-	/// //world.register( acc, x );
+	/// world.register::<Pos>( );
 	///
 	///
 	/// //x.add( ent, 42.0 );
@@ -83,7 +83,8 @@ impl World {
 	/// assert!( &x.get( ent ).unwrap().0 - 42.0 < 0.00001 );
 	/// ```
 	///
-	pub fn register<T>(&mut self, component_id: ComponentID, component: HashStore<Box<dyn Component<Type = f32>>> ) {
-		self.components.insert( component_id , component );
+	pub fn register<T: Component>( &mut self ) /*where T::Storage: Default*/ {
+		let _component_id = ComponentID::new();
+		//self.components.insert( component_id ,  );
 	}
 }

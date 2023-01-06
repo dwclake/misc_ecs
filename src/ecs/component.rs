@@ -9,7 +9,7 @@ use rand::{RngCore, thread_rng};
 /// ```
 ///
 pub trait Component {
-	type Type;
+	type Storage;
 }
 
 ///
