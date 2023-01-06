@@ -1,6 +1,6 @@
 use std::collections::hash_map::{Iter, IterMut};
 use std::collections::HashMap;
-use crate::gen::Entity;
+use crate::ecs::gen::Entity;
 
 /// EcsStore trait
 ///
