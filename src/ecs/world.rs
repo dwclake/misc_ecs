@@ -14,8 +14,8 @@ use crate::prelude::*;
 ///
 pub struct World {
 	pub entity_manager: EntityManager,
-	pub components: HashMap< ComponentID, HashStore<Box<dyn Component<Storage = ()>>>>,
-	pub systems: HashMap< SystemID, Box<dyn System<SystemData = ()>>>,
+	components: HashMap< ComponentID, HashStore<Box<dyn Component<Storage = ()>>>>,
+	systems: HashMap< SystemID, Box<dyn System<SystemData = ()>>>,
 }
 
 impl World {
