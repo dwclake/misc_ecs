@@ -42,6 +42,11 @@ impl World {
 	}
 	
 	///
+	pub fn entity_manager_mut(&mut self) -> &mut EntityManager {
+		&mut self.entity_manager
+	}
+	
+	///
 	///
 	/// # Examples
 	///
