@@ -14,8 +14,8 @@ use crate::prelude::*;
 ///
 pub struct World {
 	pub entity_manager: EntityManager,
-	components: HashMap< ComponentID, HashStore<Box<dyn Component<Storage = ()>>>>,
-	systems: HashMap< SystemID, Box<dyn System<SystemData = ()>>>,
+	_components: HashMap< ComponentID, HashStore<Box<dyn Component<Storage = ()>>>>,
+	_systems: HashMap< SystemID, Box<dyn System<SystemData = ()>>>,
 }
 
 impl World {
@@ -31,8 +31,8 @@ impl World {
 	pub fn new() -> World {
 		World {
 			entity_manager: EntityManager::new(),
-			components: HashMap::new(),
-			systems: HashMap::new(),
+			_components: HashMap::new(),
+			_systems: HashMap::new(),
 		}
 	}
 	
