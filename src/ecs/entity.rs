@@ -16,6 +16,19 @@ pub struct EntityID {
 	pub(crate) id: u64,
 }
 
+impl EntityID {
+	
+	///
+	pub fn is_active(&self) -> bool {
+		self.active
+	}
+	
+	///
+	pub fn id(&self) -> u64 {
+		self.id
+	}
+}
+
 /// Generation Manager Struct
 ///
 /// # Examples
