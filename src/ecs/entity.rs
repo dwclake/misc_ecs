@@ -10,10 +10,20 @@ use crate::prelude::*;
 ///
 /// ```
 ///
-#[derive( Eq, Hash, PartialEq, Copy, Clone, Debug)]
+#[derive( Eq, Hash, Copy, Clone, Debug)]
 pub struct EntityID {
 	pub(crate) active: bool,
 	pub(crate) id: u64,
+}
+
+impl PartialEq for EntityID {
+	fn eq(&self, rhs: &Self) -> bool {
+		if self.active == rhs.active && self.id == rhs.id {
+			true
+		} else {
+			false
+		}
+	}
 }
 
 impl EntityID {

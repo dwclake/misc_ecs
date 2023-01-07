@@ -75,7 +75,7 @@ impl World {
 	/// let mut world = World::new();
 	///
 	/// let mut x = HashStore::new();
-	/// let ent = world.entity_manager.next();
+	/// let ent = world.entity_manager().next();
 	/// x.add( ent, Box::new( Pos(42.0) ) );
 	///
 	///
