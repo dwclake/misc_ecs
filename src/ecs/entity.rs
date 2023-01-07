@@ -17,8 +17,19 @@ pub struct EntityID {
 }
 
 impl PartialEq for EntityID {
+	
+	///
 	fn eq(&self, rhs: &Self) -> bool {
 		if self.active == rhs.active && self.id == rhs.id {
+			true
+		} else {
+			false
+		}
+	}
+	
+	///
+	fn ne(&self, rhs: &Self) -> bool {
+		if self.active != rhs.active && self.id != rhs.id {
 			true
 		} else {
 			false
