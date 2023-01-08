@@ -1,6 +1,6 @@
 use std::collections::hash_map::{IntoIter, Iter, IterMut};
 use std::collections::HashMap;
-use crate::prelude::*;
+use crate::prelude::EntityID;
 
 /// Store trait
 ///
