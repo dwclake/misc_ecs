@@ -1,4 +1,5 @@
 use rand::{RngCore, thread_rng};
+use crate::ecs::store::Storage;
 
 ///
 ///
@@ -9,7 +10,7 @@ use rand::{RngCore, thread_rng};
 /// ```
 ///
 pub trait Component {
-	type Storage;
+	type Storage: Storage;
 }
 
 ///

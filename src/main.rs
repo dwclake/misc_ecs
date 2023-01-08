@@ -1,3 +1,4 @@
+use misc_ecs::ecs::store::Storage;
 use misc_ecs::prelude::*;
 
 pub struct Attributes {

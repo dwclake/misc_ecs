@@ -1,4 +1,4 @@
-use std::collections::hash_map::{Iter, IterMut};
+use std::collections::hash_map::{IntoIter, Iter, IterMut};
 use std::collections::HashMap;
 use crate::prelude::*;
 
@@ -11,7 +11,6 @@ use crate::prelude::*;
 /// ```
 ///
 pub trait Store<T> {
-	fn new( ) -> Self;
 	fn add( &mut self, entity: EntityID, t: T );
 	fn get( &self, entity: EntityID ) -> Option<&T>;
 	fn get_mut( &mut self, entity: EntityID ) -> Option<&mut T>;
@@ -32,7 +31,7 @@ pub trait Store<T> {
 /// ```
 ///
 pub trait Storage {
-	type Type;
+	fn new() -> Self;
 }
 
 /// HashStore Struct
@@ -48,11 +47,35 @@ pub struct HashStore<T> {
 	items: HashMap<EntityID, T>,
 }
 
-impl<T> Store<T> for HashStore<T> {
+impl<T> IntoIterator for HashStore<T> {
+	type Item = (EntityID, T);
+	type IntoIter = IntoIter<EntityID, T>;
 	
+	fn into_iter(self) -> Self::IntoIter {
+		self.items.into_iter()
+	}
+}
+
+impl<T> Storage for HashStore<T> {
+	/// Creates a new HashStore
+	///
+	/// # Examples
+	///
+	/// ```
+	///
+	/// ```
+	///
 	fn new( ) -> Self {
 		HashStore { items: HashMap::new( ) }
 	}
+}
+
+impl<T> HashStore<T> {
+
+	
+}
+
+impl<T> Store<T> for HashStore<T> {
 	
 	/// Adds a entity with ID gen to the HashStore
 	///

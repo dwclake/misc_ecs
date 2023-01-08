@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 use rand::{RngCore, thread_rng};
-use crate::prelude::*;
+use crate::prelude::{Component, World};
 
 /// Entity Active Struct
 ///
