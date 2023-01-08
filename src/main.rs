@@ -1,10 +1,5 @@
 use misc_ecs::prelude::*;
 
-pub struct Attributes {
-	pub mass: f64,
-	pub radius: f64,
-}
-
 fn main() {
 	
 	#[derive(Debug, Copy, Clone)]
