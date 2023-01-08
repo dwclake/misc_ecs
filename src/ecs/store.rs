@@ -11,14 +11,16 @@ use crate::prelude::EntityID;
 /// ```
 ///
 pub trait Store<T> {
-	fn add( &mut self, entity: EntityID, t: T );
-	fn get( &self, entity: EntityID ) -> Option<&T>;
-	fn get_mut( &mut self, entity: EntityID ) -> Option<&mut T>;
-	fn drop( &mut self, entity: EntityID );
-	fn for_each<F: FnMut( EntityID, &T )>( &self, func: F );
-	fn for_each_mut<F: FnMut( EntityID, &mut T )>( &mut self, func: F );
-	fn iter( &self ) -> Iter< '_, EntityID, T >;
-	fn iter_mut( &mut self ) -> IterMut< '_, EntityID, T >;
+	fn add( &mut self, entity: &EntityID, t: T );
+	fn get( &self, entity: &EntityID ) -> Option<&T>;
+	fn get_mut( &mut self, entity: &EntityID ) -> Option<&mut T>;
+	fn drop( &mut self, entity: &EntityID );
+	//fn for_each<F: FnMut( &EntityID, &T )>( &self, func: F );
+	//fn for_each_mut<F: FnMut( &EntityID, &mut T )>( &mut self, func: F );
+	fn for_each( &self, func: fn( &EntityID, &T ) );
+	fn for_each_mut( &mut self, func: fn( &EntityID, &mut T ) );
+	fn iter( &self ) -> Iter< '_, &EntityID, &T >;
+	fn iter_mut( &mut self ) -> IterMut< '_, &EntityID, &T >;
 	fn len( &self ) -> usize;
 }
 
@@ -85,8 +87,8 @@ impl<T> Store<T> for HashStore<T> {
 	///
 	/// ```
 	///
-	fn add(&mut self, id: EntityID, t: T) {
-		self.items.insert( id, t );
+	fn add(&mut self, id: &EntityID, t: T) {
+		self.items.insert( *id, t );
 	}
 	
 	/// Returns a reference to data associated with entity ID gen
@@ -97,8 +99,8 @@ impl<T> Store<T> for HashStore<T> {
 	///
 	/// ```
 	///
-	fn get(&self, id: EntityID ) -> Option<&T> {
-		self.items.get( &id )
+	fn get(&self, id: &EntityID ) -> Option<&T> {
+		self.items.get( id )
 	}
 	
 	/// Returns a mutable reference to data associated with entity ID gen
@@ -109,8 +111,8 @@ impl<T> Store<T> for HashStore<T> {
 	///
 	/// ```
 	///
-	fn get_mut(&mut self, id: EntityID) -> Option<&mut T> {
-		self.items.get_mut( &id )
+	fn get_mut(&mut self, id: &EntityID) -> Option<&mut T> {
+		self.items.get_mut( id )
 	}
 	
 	/// Removes entity with ID gen from the HashStore
@@ -121,11 +123,11 @@ impl<T> Store<T> for HashStore<T> {
 	///
 	/// ```
 	///
-	fn drop(&mut self, id: EntityID) {
-		self.items.remove( &id );
+	fn drop(&mut self, id: &EntityID) {
+		self.items.remove( id );
 	}
 	
-	/// Applies a mutable function to each entity in the HashStore but can not mutate the entities themselves
+	/*/// Applies a mutable function to each entity in the HashStore but can not mutate the entities themselves
 	///
 	/// # Examples
 	///
@@ -153,6 +155,38 @@ impl<T> Store<T> for HashStore<T> {
 		for ( _n, x ) in self.items.iter_mut( ).enumerate( ) {
 			if let Some( ( entity, data) ) = Some( (x.0, x.1) ) {
 				func( EntityID { id: entity.id, active: entity.active }, data );
+			}
+		}
+	}*/
+	
+	/// Applies a mutable function to each entity in the HashStore but can not mutate the entities themselves
+	///
+	/// # Examples
+	///
+	/// ```
+	///
+	/// ```
+	///
+	fn for_each(&self, func: fn( &EntityID, &T ) ) {
+		for ( _, x ) in self.items.iter( ).enumerate( ) {
+			if let Some( ( entity, data) ) = Some( x ) {
+				func( &EntityID { id: entity.id, active: entity.active }, data );
+			}
+		}
+	}
+	
+	/// Applies a mutable function to each entity in the HashStore and can mutate the entities themselves
+	///
+	/// # Examples
+	///
+	/// ```
+	///
+	/// ```
+	///
+	fn for_each_mut( &mut self, mut func: fn( &EntityID, &mut T ) ) {
+		for ( _, x ) in self.items.iter_mut( ).enumerate( ) {
+			if let Some( ( entity, data) ) = Some( x ) {
+				func( &EntityID { id: entity.id, active: entity.active }, data );
 			}
 		}
 	}

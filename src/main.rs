@@ -1,22 +1,32 @@
 use misc_ecs::prelude::*;
 
-fn main() {
-	
-	#[derive(Debug, Copy, Clone)]
-	struct Pos(f32);
-	
-	impl Component for Pos {
-	    type Storage = HashStore<Self>;
-	}
+#[derive(Debug, Copy, Clone)]
+struct Pos(f32);
 
-	    let mut world = World::new();
-	
-	    let mut x = HashStore::new();
-	    let ent = world.entity_manager_mut().next();
-	    x.add( ent, Box::new( Pos(42.0) ) );
-	
-	    let acc = ComponentID::new();
-	    world.register::<Pos>( acc );
+impl Component for Pos {
+	type Storage = HashStore<Self>;
+}
+
+fn lim( _: &EntityID, x: &mut Pos ) {
+	x.0 = x.0.clamp( 0.0, 100.0 );
+}
+
+fn main() {
+
+	let mut world = World::new();
+
+	let mut x = HashStore::new();
+	let ent = world.entity_manager_mut().next();
+	x.add( &ent, Pos(42.0) );
+
+	x.for_each_mut( | entity, data| {
+		lim ( entity,data );
+	});
+
+	x.for_each_mut( lim );
+
+	let acc = ComponentID::new();
+	world.register::<Pos>( acc );
 
 	for (_x, y) in x {
  		println!("{:?}", y.0);
