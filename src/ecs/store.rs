@@ -56,14 +56,6 @@ impl<T> IntoIterator for HashStore<T> {
 	}
 }
 
-/*impl<T> Iterator for HashStore<T> {
-	type Item = ();
-	
-	fn next(&mut self) -> Option<Self::Item> {
-		todo!()
-	}
-}*/
-
 impl<T> Storage for HashStore<T> {
 	/// Creates a new HashStore
 	///
