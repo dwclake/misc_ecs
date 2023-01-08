@@ -1,4 +1,3 @@
-use misc_ecs::ecs::store::Storage;
 use misc_ecs::prelude::*;
 
 pub struct Attributes {
@@ -8,26 +7,23 @@ pub struct Attributes {
 
 fn main() {
 	
-	let mut gen_manager = EntityManager::new();
-	let mut pos = HashStore::new();
-	let mut vel = HashStore::new();
-	let mut acc = HashStore::new();
-	let mut pass = 0;
+	#[derive(Debug, Copy, Clone)]
+	struct Pos(f32);
 	
-	loop {
-		// create one entity per loop (choice not requirement)
-		if gen_manager.len() < 100 {
-			let entity = gen_manager.next();
-			pos.add(entity, 5 );
-			vel.add(entity, 5 );
-			acc.add(entity, 5 );
-		} else { break }
-		
-		let _x = format!("Pass = {}", pass);
-		pass += 1;
-		
-		std::thread::sleep(std::time::Duration::from_millis(30));
+	impl Component for Pos {
+	    type Storage = HashStore<Self>;
 	}
+
+	    let mut world = World::new();
 	
-	dbg!( gen_manager );
+	    let mut x = HashStore::new();
+	    let ent = world.entity_manager_mut().next();
+	    x.add( ent, Box::new( Pos(42.0) ) );
+	
+	    let acc = ComponentID::new();
+	    world.register::<Pos>( acc );
+
+	for (_x, y) in x {
+ 		println!("{:?}", y.0);
+	}
 }
