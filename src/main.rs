@@ -7,7 +7,7 @@ impl Component for Pos {
 	type Storage = HashStore<Self>;
 }
 
-fn lim( _: &EntityID, x: &mut Pos ) {
+fn lim( _: EntityID, x: &mut Pos ) {
 	x.0 = x.0.clamp( 0.0, 100.0 );
 }
 
