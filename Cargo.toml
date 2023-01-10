@@ -1,7 +1,7 @@
 [package]
 name = "misc_ecs"
 description = "misc_ecs is a basic Entity Component System library, being developed as a way to learn."
-version = "0.1.8"
+version = "0.1.9"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/dwclake/misc_ecs"
 authors = ["dwclake <devonwebb559@gmail.com>"]
