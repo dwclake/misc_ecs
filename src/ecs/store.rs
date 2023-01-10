@@ -157,38 +157,6 @@ impl<T> Store<T> for HashStore<T> {
 		}
 	}
 	
-	/*/// Applies a mutable function to each entity in the HashStore but can not mutate the entities themselves
-	///
-	/// # Examples
-	///
-	/// ```
-	///
-	/// ```
-	///
-	fn for_each(&self, func: fn( &EntityID, &T ) ) {
-		for ( _, x ) in self.items.iter( ).enumerate( ) {
-			if let Some( ( entity, data) ) = Some( x ) {
-				func( &EntityID { id: entity.id, active: entity.active }, data );
-			}
-		}
-	}
-	
-	/// Applies a mutable function to each entity in the HashStore and can mutate the entities themselves
-	///
-	/// # Examples
-	///
-	/// ```
-	///
-	/// ```
-	///
-	fn for_each_mut( &mut self, func: fn( &EntityID, &mut T ) ) {
-		for ( _, x ) in self.items.iter_mut( ).enumerate( ) {
-			if let Some( ( entity, data) ) = Some( x ) {
-				func( &EntityID { id: entity.id, active: entity.active }, data );
-			}
-		}
-	}*/
-	
 	///
 	///
 	/// # Examples
