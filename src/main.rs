@@ -17,7 +17,7 @@ fn main() {
 
 	let mut x = HashStore::new();
 	let ent = world.entity_manager_mut().next();
-	x.add( ent, Pos(42.0) );
+	x.add( ent, Pos(402.0) );
 
 	x.for_each_mut( | entity, data| {
 		lim ( entity,data );
