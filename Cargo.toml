@@ -3,8 +3,8 @@ name = "misc_ecs"
 description = "misc_ecs is a basic Entity Component System library, being developed as a way to learn."
 version = "0.1.8"
 license = "MIT OR Apache-2.0"
-repository = "https://github.com/devonwebbR2K/misc_ecs"
-authors = ["devonwebbR2K <devonwebb559@gmail.com>"]
+repository = "https://github.com/dwclake/misc_ecs"
+authors = ["dwclake <devonwebb559@gmail.com>"]
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
