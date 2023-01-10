@@ -193,31 +193,3 @@ impl<T> Store<T> for HashStore<T> {
 		self.items.len()
 	}
 }
-
-/*#[cfg(test)]
-mod tests {
-	//use super::*;
-	//use crate::gen::{ EntityIDManager };
-	
-	#[test]
-	fn test_store_can_drop( ) {
-		/*let mut gen_manager = EntityIDManager::new( );
-		let mut vec_store = HashStore::new( );
-		
-		vec_store.add( gen_manager.next( ), 5 );
-		vec_store.add( gen_manager.next( ), 3 );
-		vec_store.add( gen_manager.next( ), 8 );
-		
-		let g4 = gen_manager.next( );
-		
-		vec_store.add( g4, 9 );
-		
-		vec_store.for_each_mut( | _gen, data| *data += 2);
-		
-		assert_eq!( vec_store.get( g4 ), Some( &11 ) );
-		
-		vec_store.drop( g4 );
-		
-		assert_eq!( vec_store.get( g4 ), None );*/
-	}
-}*/
