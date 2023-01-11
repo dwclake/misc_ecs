@@ -11,12 +11,12 @@ use crate::prelude::{Component, World};
 /// ```
 ///
 #[derive( Eq, Hash, Copy, Clone, Debug)]
-pub struct EntityID {
+pub struct Entity {
 	pub(crate) active: bool,
 	pub(crate) id: u64,
 }
 
-impl PartialEq for EntityID {
+impl PartialEq for Entity {
 	
 	///
 	fn eq(&self, rhs: &Self) -> bool {
@@ -37,7 +37,7 @@ impl PartialEq for EntityID {
 	}
 }
 
-impl EntityID {
+impl Entity {
 	
 	///
 	pub fn is_active(&self) -> bool {
@@ -61,8 +61,8 @@ impl EntityID {
 //Where we get a new GenerationIDs from
 #[derive(Debug)]
 pub struct EntityManager {
-	items: HashMap<u64, EntityID>,
-	drops: Vec<EntityID>, // List of all dropped entities
+	items: HashMap<u64, Entity>,
+	drops: Vec<Entity>, // List of all dropped entities
 }
 
 impl EntityManager {
@@ -102,10 +102,10 @@ impl EntityManager {
 	///
 	/// ```
 	///
-	pub fn next( &mut self ) -> EntityID {
+	pub fn next( &mut self ) -> Entity {
 		if let Some( entity ) = self.drops.pop( ) {
 			// Most recent drop
-			let entity = EntityID {
+			let entity = Entity {
 				active: true,
 				id: entity.id,
 			};
@@ -113,7 +113,7 @@ impl EntityManager {
 			return entity;
 		}
 		// If nothing left in drops, add on the end
-		let entity = EntityID { active: true, id: thread_rng().next_u64() };
+		let entity = Entity { active: true, id: thread_rng().next_u64() };
 		self.items.insert( entity.id, entity.clone() );
 		return entity;
 		
@@ -127,7 +127,7 @@ impl EntityManager {
 	///
 	/// ```
 	///
-	pub fn drop( &mut self, entity: &mut EntityID ) {
+	pub fn drop( &mut self, entity: &mut Entity ) {
 		if entity.active {
 			entity.active = false;
 			self.drops.push( *entity );
@@ -157,7 +157,7 @@ pub trait Builder<T> {
 	///
 	/// ```
 	///
-	fn build(self) -> EntityID;
+	fn build(self) -> Entity;
 }
 
 ///
@@ -169,7 +169,7 @@ pub trait Builder<T> {
 /// ```
 ///
 pub struct EntityBuilder<'a> {
-	pub(crate) entity: EntityID,
+	pub(crate) entity: Entity,
 	pub(crate) _world: &'a World,
 	pub(crate) built: bool,
 }
@@ -185,7 +185,7 @@ impl<'a, T> Builder<T> for EntityBuilder<'a> {
 		self
 	}
 	
-	fn build(mut self) -> EntityID {
+	fn build(mut self) -> Entity {
 		self.built = true;
 		self.entity
 	}
@@ -200,12 +200,12 @@ mod tests {
 		/*let mut gen_manager = EntityManager::new( );
 		
 		let g = gen_manager.next( );
-		//assert_eq!( g, EntityID { gen: 0, pos: 0 } );
+		//assert_eq!( g, Entity { gen: 0, pos: 0 } );
 		let g2 = gen_manager.next( );
 		gen_manager.next( );
 		gen_manager.next( );
 		gen_manager.drop( g2 );
 		let g3 = gen_manager.next( );
-		assert_eq!( g3, EntityID { gen:1, pos: 1 } );*/
+		assert_eq!( g3, Entity { gen:1, pos: 1 } );*/
 	}
 }*/

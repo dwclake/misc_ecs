@@ -1,6 +1,6 @@
 use std::collections::hash_map::{IntoIter, Iter, IterMut};
 use std::collections::HashMap;
-use crate::prelude::EntityID;
+use crate::prelude::Entity;
 
 /// Store trait
 ///
@@ -11,14 +11,14 @@ use crate::prelude::EntityID;
 /// ```
 ///
 pub trait Store<T> {
-	fn add( &mut self, entity: EntityID, t: T );
-	fn get( &self, entity: EntityID ) -> Option<&T>;
-	fn get_mut( &mut self, entity: EntityID ) -> Option<&mut T>;
-	fn drop( &mut self, entity: EntityID );
-	fn for_each<F: FnMut( EntityID, &T )>( &self, func: F );
-	fn for_each_mut<F: FnMut( EntityID, &mut T )>( &mut self, func: F );
-	fn iter( &self ) -> Iter< '_, EntityID, T >;
-	fn iter_mut( &mut self ) -> IterMut< '_, EntityID, T >;
+	fn add( &mut self, entity: Entity, t: T );
+	fn get( &self, entity: Entity ) -> Option<&T>;
+	fn get_mut( &mut self, entity: Entity ) -> Option<&mut T>;
+	fn drop( &mut self, entity: Entity );
+	fn for_each<F: FnMut( Entity, &T )>( &self, func: F );
+	fn for_each_mut<F: FnMut( Entity, &mut T )>( &mut self, func: F );
+	fn iter( &self ) -> Iter< '_, Entity, T >;
+	fn iter_mut( &mut self ) -> IterMut< '_, Entity, T >;
 	fn len( &self ) -> usize;
 }
 
@@ -44,12 +44,12 @@ pub trait Storage {
 ///
 #[derive(Debug)]
 pub struct HashStore<T> {
-	items: HashMap<EntityID, T>,
+	items: HashMap<Entity, T>,
 }
 
 impl<T> IntoIterator for HashStore<T> {
-	type Item = (EntityID, T);
-	type IntoIter = IntoIter<EntityID, T>;
+	type Item = (Entity, T);
+	type IntoIter = IntoIter<Entity, T>;
 	
 	fn into_iter(self) -> Self::IntoIter {
 		self.items.into_iter()
@@ -85,7 +85,7 @@ impl<T> Store<T> for HashStore<T> {
 	///
 	/// ```
 	///
-	fn add(&mut self, id: EntityID, t: T) {
+	fn add(&mut self, id: Entity, t: T) {
 		self.items.insert( id, t );
 	}
 	
@@ -97,7 +97,7 @@ impl<T> Store<T> for HashStore<T> {
 	///
 	/// ```
 	///
-	fn get(&self, id: EntityID ) -> Option<&T> {
+	fn get(&self, id: Entity ) -> Option<&T> {
 		self.items.get( &id )
 	}
 	
@@ -109,7 +109,7 @@ impl<T> Store<T> for HashStore<T> {
 	///
 	/// ```
 	///
-	fn get_mut(&mut self, id: EntityID) -> Option<&mut T> {
+	fn get_mut(&mut self, id: Entity) -> Option<&mut T> {
 		self.items.get_mut( &id )
 	}
 	
@@ -121,7 +121,7 @@ impl<T> Store<T> for HashStore<T> {
 	///
 	/// ```
 	///
-	fn drop(&mut self, id: EntityID) {
+	fn drop(&mut self, id: Entity) {
 		self.items.remove( &id );
 	}
 	
@@ -133,10 +133,10 @@ impl<T> Store<T> for HashStore<T> {
 	///
 	/// ```
 	///
-	fn for_each<F: FnMut(EntityID, &T)>(&self, mut func: F) {
+	fn for_each<F: FnMut(Entity, &T)>(&self, mut func: F) {
 		for ( _n, x ) in self.items.iter( ).enumerate( ) {
 			if let Some( ( entity, data) ) = Some( (x.0, x.1) ) {
-				func( EntityID { id: entity.id, active: entity.active }, data );
+				func( Entity { id: entity.id, active: entity.active }, data );
 			}
 		}
 	}
@@ -149,10 +149,10 @@ impl<T> Store<T> for HashStore<T> {
 	///
 	/// ```
 	///
-	fn for_each_mut<F: FnMut(EntityID, &mut T)>(&mut self, mut func: F) {
+	fn for_each_mut<F: FnMut(Entity, &mut T)>(&mut self, mut func: F) {
 		for ( _n, x ) in self.items.iter_mut( ).enumerate( ) {
 			if let Some( ( entity, data) ) = Some( (x.0, x.1) ) {
-				func( EntityID { id: entity.id, active: entity.active }, data );
+				func( Entity { id: entity.id, active: entity.active }, data );
 			}
 		}
 	}
@@ -165,7 +165,7 @@ impl<T> Store<T> for HashStore<T> {
 	///
 	/// ```
 	///
-	fn iter( &self ) -> Iter< '_, EntityID, T > {
+	fn iter( &self ) -> Iter< '_, Entity, T > {
 		self.items.iter()
 	}
 	
@@ -177,7 +177,7 @@ impl<T> Store<T> for HashStore<T> {
 	///
 	/// ```
 	///
-	fn iter_mut( &mut self ) -> IterMut< '_, EntityID, T > {
+	fn iter_mut( &mut self ) -> IterMut< '_, Entity, T > {
 		self.items.iter_mut()
 	}
 	
