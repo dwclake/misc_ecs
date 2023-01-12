@@ -16,6 +16,12 @@ pub struct Entity {
 	pub(crate) id: u64,
 }
 
+impl Default for Entity {
+    fn default() -> Self {
+        Self { active: false, id: 0 }
+    }
+}
+
 impl PartialEq for Entity {
 	
 	///
