@@ -56,6 +56,12 @@ impl<T> IntoIterator for HashStore<T> {
 	}
 }
 
+impl<T> Default for HashStore<T> {
+    fn default() -> Self {
+        Self { items: Default::default() }
+    }
+}
+
 impl<T> Storage for HashStore<T> {
 	/// Creates a new HashStore
 	///
