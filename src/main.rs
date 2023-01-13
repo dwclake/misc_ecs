@@ -1,4 +1,4 @@
-use misc_ecs::prelude::*;
+use misc_ecs::{prelude::*, ecs::{component::{Component, ComponentID}, world::World}};
 
 #[derive(Debug, Copy, Clone)]
 struct Pos(f32);

@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 use rand::{RngCore, thread_rng};
-use crate::prelude::{Component, World};
+use super::{component::Component, world::World};
+
 
 /// Entity Active Struct
 ///
@@ -196,22 +197,3 @@ impl<'a, T> Builder<T> for EntityBuilder<'a> {
 		self.entity
 	}
 }
-
-/*#[cfg(test)]
-mod tests {
-	//use super::*;
-	
-	#[test]
-	fn test_items_drop( ) {
-		/*let mut gen_manager = EntityManager::new( );
-		
-		let g = gen_manager.next( );
-		//assert_eq!( g, Entity { gen: 0, pos: 0 } );
-		let g2 = gen_manager.next( );
-		gen_manager.next( );
-		gen_manager.next( );
-		gen_manager.drop( g2 );
-		let g3 = gen_manager.next( );
-		assert_eq!( g3, Entity { gen:1, pos: 1 } );*/
-	}
-}*/

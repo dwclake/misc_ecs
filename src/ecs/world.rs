@@ -2,7 +2,10 @@ use std::collections::HashMap;
 use crate::ecs::component::{ComponentID};
 use crate::ecs::entity::EntityBuilder;
 use crate::ecs::system::SystemID;
-use crate::prelude::{Component, EntityManager, System};
+use crate::prelude::EntityManager;
+
+use super::component::Component;
+use super::system::System;
 
 ///
 ///
