@@ -142,7 +142,7 @@ impl<T> Store<T> for HashStore<T> {
 	fn for_each<F: FnMut(Entity, &T)>(&self, mut func: F) {
 		for ( _n, x ) in self.items.iter( ).enumerate( ) {
 			if let Some( ( entity, data) ) = Some( (x.0, x.1) ) {
-				func( Entity { id: entity.id, active: entity.active }, data );
+				func( *entity, data );
 			}
 		}
 	}
@@ -158,7 +158,7 @@ impl<T> Store<T> for HashStore<T> {
 	fn for_each_mut<F: FnMut(Entity, &mut T)>(&mut self, mut func: F) {
 		for ( _n, x ) in self.items.iter_mut( ).enumerate( ) {
 			if let Some( ( entity, data) ) = Some( (x.0, x.1) ) {
-				func( Entity { id: entity.id, active: entity.active }, data );
+				func( *entity, data );
 			}
 		}
 	}
